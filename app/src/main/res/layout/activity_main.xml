@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8FDDDF"
+        tools:ignore="MissingConstraints">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Auto-Dialer"
+                android:background="#000080"
+                android:padding="20dp"
+                android:textSize="40sp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                />
+            <EditText
+                android:id="@+id/userName"
+                android:layout_width="150dp"
+                android:layout_height="80dp"
+                android:hint="Username"
+                android:textSize="30sp"
+                android:layout_marginVertical="60dp"
+                android:layout_gravity="center"/>
+            <EditText
+                android:id="@+id/passWord"
+                android:layout_width="150dp"
+                android:layout_height="80dp"
+                android:hint="Password"
+                android:textSize="30sp"
+                android:layout_marginVertical="10dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/button"
+                android:onClick="login"
+                android:layout_width="150dp"
+                android:layout_marginTop="60dp"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="29dp"
+                android:layout_marginTop="200dp"
+                android:background="#000080"
+                android:text="Develop By : - Jatin Kumawat,Saurabh Kumawat &amp; Sudhanshu Singh"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>
