@@ -96,7 +96,7 @@ public class MainActivity2 extends AppCompatActivity {
         mQueue.add(request);
         mQueue.start();
         textView = (TextView) findViewById(R.id.User);
-        textView.setText(UName);
+        textView.setText(UserName);
         upLoadServerUri = "http://api.jatinkumawat.rf.gd/upData/index.php";
 
         ((Button)findViewById(R.id.btnCall)).setOnClickListener(new View.OnClickListener() {
