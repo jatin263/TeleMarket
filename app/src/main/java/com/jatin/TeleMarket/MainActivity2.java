@@ -64,11 +64,11 @@ public class MainActivity2 extends AppCompatActivity {
         Intent intent = getIntent();
         String Name = intent.getStringExtra("NameS");
         String iddd = intent.getStringExtra("uID");
-        String url = "https://mocki.io/v1/39d354a1-c436-455d-94f7-8e2fba1e3b11";
+        String url = "http://api.jatinkumawat.rf.gd/upData/dataFetch.php?uid="+iddd;
         System.out.println(url);
         mQueue = Volley.newRequestQueue(this);
         Customer OutCust ;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -98,7 +98,7 @@ public class MainActivity2 extends AppCompatActivity {
         textView.setText(Name);
 
         button=(Button) findViewById(R.id.btnCall1);
-        upLoadServerUri = "https://girdhari.000webhostapp.com/uploadFile.php";
+        upLoadServerUri = "http://api.jatinkumawat.rf.gd/upData/index.php";
 
         ((Button)findViewById(R.id.btnCall)).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -166,7 +166,7 @@ public class MainActivity2 extends AppCompatActivity {
                     else{
                         datee = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
                     }
-                    String urlApi = "https://girdhari.000webhostapp.com/uploadFile.php";
+                    String urlApi = "http://api.jatinkumawat.rf.gd/upData/index.php";
                     String finalDatee = datee;
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, urlApi,
                             new Response.Listener<String>() {
@@ -190,7 +190,7 @@ public class MainActivity2 extends AppCompatActivity {
                             params.put("CallStart", String.valueOf(startTime));
                             params.put("CallEnd", String.valueOf(finalDatee));
                             params.put("teleNum",num);
-                            params.put("recfile",filePath);
+//                            params.put("recfile",filePath);
                             return params;
                         }
                     };
@@ -259,7 +259,7 @@ public class MainActivity2 extends AppCompatActivity {
                         .addFormDataPart("some_key","some_value")
                         .build();
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url("https://girdhari.000webhostapp.com/moveFile.php")
+                        .url("http://api.jatinkumawat.rf.gd/upData/fileUpload.php")
                         .post(requestBody)
                         .build();
                 OkHttpClient client = new OkHttpClient();

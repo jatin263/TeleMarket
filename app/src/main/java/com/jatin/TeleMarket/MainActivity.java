@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
                 String u = ed.getText().toString();
                 ed = (EditText) findViewById(R.id.passWord);
                 String p = ed.getText().toString();
-                String urlApi = "https://mocki.io/v1/a2311b1e-8052-4c7b-9d22-b95b17623821";
-                String url = urlApi;
+                String urlApi = "http://api.jatinkumawat.rf.gd/upData/login.php?unames=";
+                String url = urlApi+u;
                 System.out.println(url);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
 
                             @Override
                             public void onResponse(JSONObject response) {
@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
                                     String Name = response.getString("name");
                                     String Password = response.getString("password");
                                     String Username = response.getString("username");
-//                                    String IdU = response.getString("id");
+                                    String IdU = response.getString("id");
                                     if(u.equals(Username) && p.equals(Password)){
                                         Intent intent = new Intent(MainActivity.this,MainActivity2.class);
                                         intent.putExtra("uName",Username);
-//                                        intent.putExtra("uID",IdU);
+                                        intent.putExtra("uID",IdU);
                                         intent.putExtra("NameS",Name);
                                         startActivity(intent);
                                     }
