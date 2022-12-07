@@ -62,9 +62,10 @@ public class MainActivity2 extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
-        String Name = intent.getStringExtra("NameS");
-        String iddd = intent.getStringExtra("uID");
-        String url = "http://api.jatinkumawat.rf.gd/upData/dataFetch.php?uid="+iddd;
+        String UName = intent.getStringExtra("UName");
+        String UserName = intent.getStringExtra("UserName");
+        String UserId = intent.getStringExtra("UserId");
+        String url = "http://api.jatinkumawat.rf.gd/upData/dataFetch.php?uid="+UserId;
         System.out.println(url);
         mQueue = Volley.newRequestQueue(this);
         Customer OutCust ;
@@ -76,8 +77,8 @@ public class MainActivity2 extends AppCompatActivity {
                         try {
                                 String CusName = response.getString("name").toString();
                                 String CusNum = response.getString("number").toString();
-//                                String CusId = response.getString("id").toString();
-                                Customer customers = new Customer(CusName,new BigInteger(CusNum));
+                                String CusId = response.getString("id").toString();
+                                Customer customers = new Customer(CusName,new BigInteger(CusNum),CusId);
                                 DisplayOnPage(customers);
 
                         } catch (JSONException e) {
@@ -95,9 +96,7 @@ public class MainActivity2 extends AppCompatActivity {
         mQueue.add(request);
         mQueue.start();
         textView = (TextView) findViewById(R.id.User);
-        textView.setText(Name);
-
-        button=(Button) findViewById(R.id.btnCall1);
+        textView.setText(UName);
         upLoadServerUri = "http://api.jatinkumawat.rf.gd/upData/index.php";
 
         ((Button)findViewById(R.id.btnCall)).setOnClickListener(new View.OnClickListener() {
@@ -109,7 +108,10 @@ public class MainActivity2 extends AppCompatActivity {
                 String CName = TName.getText().toString();
                 TextView TNum = (TextView) findViewById(R.id.CustomerNumber);
                 String CNum = TNum.getText().toString();
-                Customer c = new Customer(CName,new BigInteger(CNum));
+                TextView TiD = (TextView) findViewById(R.id.ccid);
+                String Cid = TiD.getText().toString();
+                System.out.println(Cid);
+                Customer c = new Customer(CName,new BigInteger(CNum),Cid);
                 TelephonyManager manager = (TelephonyManager) getApplicationContext().getSystemService(TELEPHONY_SERVICE);
                 if(manager.getCallState()==TelephonyManager.CALL_STATE_IDLE){
                     Toast.makeText(getApplicationContext(),"Making Call Wait",Toast.LENGTH_SHORT).show();
@@ -123,7 +125,7 @@ public class MainActivity2 extends AppCompatActivity {
                     }
                    String filePath=getRecordingFilePath(c);
                     Date date = new Date();
-                    CharSequence startTime = DateFormat.format("yy-MM-dd hh:mm:ss",date.getTime());
+                    CharSequence startTime = DateFormat.format("hh:mm:ss",date.getTime());
                     AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //turn on speaker
                     if (mAudioManager != null) {
                         mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION); //MODE_IN_COMMUNICATION | MODE_IN_CALL
@@ -161,10 +163,10 @@ public class MainActivity2 extends AppCompatActivity {
                     CharSequence endTime = DateFormat.format("yy-MM-dd hh:mm:ss",date.getTime());
                     String datee = null;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        datee = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                        datee = new SimpleDateFormat("hh:mm:ss").format(new Date());
                     }
                     else{
-                        datee = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                        datee = new SimpleDateFormat("hh:mm:ss").format(new Date());
                     }
                     String urlApi = "http://api.jatinkumawat.rf.gd/upData/index.php";
                     String finalDatee = datee;
@@ -189,7 +191,7 @@ public class MainActivity2 extends AppCompatActivity {
                             Map<String,String> params = new HashMap<String,String>();
                             params.put("CallStart", String.valueOf(startTime));
                             params.put("CallEnd", String.valueOf(finalDatee));
-                            params.put("teleNum",num);
+                            params.put("cid",Cid);
 //                            params.put("recfile",filePath);
                             return params;
                         }
@@ -205,6 +207,10 @@ public class MainActivity2 extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"File not found",Toast.LENGTH_SHORT).show();
                     }
                     Intent intent = new Intent(MainActivity2.this,FeedBack.class);
+                    intent.putExtra("Cid",Cid);// custData id
+                    intent.putExtra("UserName",UserName); //User Name
+                    intent.putExtra("UserId",UserId); //User ID
+                    intent.putExtra("UName",UName);
                     startActivity(intent);
 
                 }
@@ -252,11 +258,15 @@ public class MainActivity2 extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(),path,Toast.LENGTH_SHORT).show();
             System.out.println(path);
             File file = new File(path);
+            TextView tv = (TextView) findViewById(R.id.ccid);
+            String cid = tv.getText().toString();
+            System.out.println("cid - "+cid);
+
             try{
                 RequestBody requestBody;
                 requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                         .addFormDataPart("files",file.getName(),RequestBody.create(MediaType.parse("audio/*"),file))
-                        .addFormDataPart("some_key","some_value")
+                        .addFormDataPart("cid",cid)
                         .build();
                 okhttp3.Request request = new okhttp3.Request.Builder()
                         .url("http://api.jatinkumawat.rf.gd/upData/fileUpload.php")
@@ -288,6 +298,8 @@ public class MainActivity2 extends AppCompatActivity {
         textView.setText(c.GetName());
         textView = (TextView) findViewById(R.id.CustomerNumber);
         textView.setText(c.GetMobileNumber());
+        textView = (TextView) findViewById(R.id.ccid);
+        textView.setText(c.getCiD());
     }
     private String getRecordingFilePath(Customer customer){
         Date date = new Date();
@@ -306,9 +318,10 @@ class Customer{
     String name;
     String id;
     BigInteger number;
-    Customer(String name,BigInteger number){
+    Customer(String name,BigInteger number,String cid){
         this.name = name;
         this.number=number;
+        this.id = cid;
     }
     public String GetMobileNumber(){
         String numStr = String.valueOf(this.number);
@@ -317,5 +330,8 @@ class Customer{
     }
     public String GetName(){
         return  this.name;
+    }
+    public String getCiD(){
+        return  this.id;
     }
 }
