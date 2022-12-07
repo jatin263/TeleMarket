@@ -25,8 +25,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,50 +48,80 @@ import okhttp3.RequestBody;
 
 public class MainActivity2 extends AppCompatActivity {
     private TextView textView;
-//    private int IdleTime = 0;
-//    private AudioManager mA ;
-//    int serverResponseCode = 0;
+    private RequestQueue mQueue;
     private MediaRecorder rec = new MediaRecorder();
-//    private boolean recStart;
-    Customer[] customers = new Customer[100];
-//    File file;
     String upLoadServerUri = null;
     String filePath = null;
 
     private Button button;
-    public static int idd =0;
+    public int idd =0;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        String[] Names = new String[]{"Jatin Kumawat","Karan Kumawat","Saurabh Kumawat","Ankit Kumawat"};
-        String[] Numbers = new String[]{"6375842013","7793815719","7611921283","6375842013"};
-        for (int i = 0 ; i< Names.length;i++){
-            customers[i] = new Customer(Names[i],new BigInteger(Numbers[i]));
-        }
         setContentView(R.layout.activity_main2);
-        DisplayOnPage(customers[idd]);
+        Intent intent = getIntent();
+        String Name = intent.getStringExtra("NameS");
+        String iddd = intent.getStringExtra("uID");
+        String url = "https://mocki.io/v1/39d354a1-c436-455d-94f7-8e2fba1e3b11";
+        System.out.println(url);
+        mQueue = Volley.newRequestQueue(this);
+        Customer OutCust ;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Response: " + response.toString());
+                        try {
+                                String CusName = response.getString("name").toString();
+                                String CusNum = response.getString("number").toString();
+//                                String CusId = response.getString("id").toString();
+                                Customer customers = new Customer(CusName,new BigInteger(CusNum));
+                                DisplayOnPage(customers);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                System.out.println("Errorrrr");
+                error.printStackTrace();
+            }
+        });
+        mQueue.add(request);
+        mQueue.start();
+        textView = (TextView) findViewById(R.id.User);
+        textView.setText(Name);
+
         button=(Button) findViewById(R.id.btnCall1);
-        upLoadServerUri = "http://api.jatinkumawat.rf.gd/upData/fileUpload.php";
+        upLoadServerUri = "https://girdhari.000webhostapp.com/uploadFile.php";
 
         ((Button)findViewById(R.id.btnCall)).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View v) {
+                TextView TName = (TextView) findViewById(R.id.CustomerName);
+                String CName = TName.getText().toString();
+                TextView TNum = (TextView) findViewById(R.id.CustomerNumber);
+                String CNum = TNum.getText().toString();
+                Customer c = new Customer(CName,new BigInteger(CNum));
                 TelephonyManager manager = (TelephonyManager) getApplicationContext().getSystemService(TELEPHONY_SERVICE);
                 if(manager.getCallState()==TelephonyManager.CALL_STATE_IDLE){
                     Toast.makeText(getApplicationContext(),"Making Call Wait",Toast.LENGTH_SHORT).show();
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    String num = customers[idd].GetMobileNumber();
-                    callIntent.setData(Uri.parse("tel:"+customers[idd].GetMobileNumber()));
+                    String num = c.GetMobileNumber();
+                    callIntent.setData(Uri.parse("tel:"+c.GetMobileNumber()));
                     startActivity(callIntent);
                     Toast.makeText(getApplicationContext(),"Rec Start",Toast.LENGTH_SHORT).show();
                     while(manager.getCallState()!=TelephonyManager.CALL_STATE_OFFHOOK){
 
                     }
-                    String filePath=getRecordingFilePath(customers[idd]);
+                   String filePath=getRecordingFilePath(c);
                     Date date = new Date();
                     CharSequence startTime = DateFormat.format("yy-MM-dd hh:mm:ss",date.getTime());
                     AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //turn on speaker
@@ -95,19 +129,14 @@ public class MainActivity2 extends AppCompatActivity {
                         mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION); //MODE_IN_COMMUNICATION | MODE_IN_CALL
                         mAudioManager.setSpeakerphoneOn(true);
                         mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0); // increase Volume
-                        //hasWiredHeadset(mAudioManager);
                     }
-
-                    //android.permission.RECORD_AUDIO
                     String manufacturer = Build.MANUFACTURER;
-                    //Log.d(TAG, manufacturer);
                     try{
                         rec.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                         rec.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                         rec.setOutputFile(filePath);
                         rec.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                         rec.prepare();
-                       // Thread.sleep(1000);
                         rec.start();
                         Toast.makeText(getApplicationContext(),"Recording Started",Toast.LENGTH_SHORT).show();
                     }
@@ -117,19 +146,18 @@ public class MainActivity2 extends AppCompatActivity {
 
                     System.out.println("Rec Start");
                     Intent iIntent = new Intent(Intent.ACTION_MAIN);
-                    callIntent.setData(Uri.parse("tel:"+customers[idd].GetMobileNumber()));
+                    callIntent.setData(Uri.parse("tel:"+c.GetMobileNumber()));
                     startActivity(callIntent);
                     while(manager.getCallState()!=TelephonyManager.CALL_STATE_IDLE )
                     {
                         //Toast.makeText(getApplicationContext(),"Rec Start",Toast.LENGTH_SHORT).show();
                     }
-//                    TelephonyManager.CellInfoCallback()
                     rec.stop();
                     rec.release();
 
                     Toast.makeText(getApplicationContext(),"Now Idle",Toast.LENGTH_SHORT).show();
                     idd++;
-                    DisplayOnPage(customers[idd]);
+//                    DisplayOnPage(customers[idd]);
                     CharSequence endTime = DateFormat.format("yy-MM-dd hh:mm:ss",date.getTime());
                     String datee = null;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -138,21 +166,21 @@ public class MainActivity2 extends AppCompatActivity {
                     else{
                         datee = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
                     }
-                    String urlApi = "http://api.jatinkumawat.rf.gd/upData/index.php";
+                    String urlApi = "https://girdhari.000webhostapp.com/uploadFile.php";
                     String finalDatee = datee;
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, urlApi,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     System.out.println(response.trim());
-                                    Toast.makeText(MainActivity2.this, response.trim(), Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(MainActivity2.this, response.trim(), Toast.LENGTH_SHORT).show();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     System.out.println(error.toString());
-                                    Toast.makeText(MainActivity2.this, error.toString(), Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(MainActivity2.this, error.toString(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                     ){
@@ -160,9 +188,9 @@ public class MainActivity2 extends AppCompatActivity {
                         protected Map<String,String> getParams(){
                             Map<String,String> params = new HashMap<String,String>();
                             params.put("CallStart", String.valueOf(startTime));
-                            params.put("CallEnd", finalDatee);
+                            params.put("CallEnd", String.valueOf(finalDatee));
                             params.put("teleNum",num);
-//                            params.put("recfile",filePath);
+                            params.put("recfile",filePath);
                             return params;
                         }
                     };
@@ -185,7 +213,9 @@ public class MainActivity2 extends AppCompatActivity {
                 }
             }
         });
+
     }
+
 
     private void UploadFileRec(String filePath) {
         UploadTask uploadTask = new UploadTask();
@@ -229,7 +259,7 @@ public class MainActivity2 extends AppCompatActivity {
                         .addFormDataPart("some_key","some_value")
                         .build();
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url("http://api.jatinkumawat.rf.gd/upData/fileUpload.php")
+                        .url("https://girdhari.000webhostapp.com/moveFile.php")
                         .post(requestBody)
                         .build();
                 OkHttpClient client = new OkHttpClient();
@@ -274,6 +304,7 @@ public class MainActivity2 extends AppCompatActivity {
 
 class Customer{
     String name;
+    String id;
     BigInteger number;
     Customer(String name,BigInteger number){
         this.name = name;

@@ -15,7 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,13 +23,12 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue mQueue;
     private String Passwordd = null;
     private String Namee = null;
-    private int idd = 0;
+    private String idd = null;
     private Button button;
     private EditText ed;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getActionBar().hide();
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         mQueue = Volley.newRequestQueue(this);
@@ -38,65 +36,97 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String uName = null;
+                String uPass = null;
                 ed = (EditText) findViewById(R.id.userName);
                 String u = ed.getText().toString();
                 ed = (EditText) findViewById(R.id.passWord);
                 String p = ed.getText().toString();
-                String urlApi = "http://api.jatinkumawat.rf.gd/upData/login.php?unames=";
-                jsonPrase(urlApi+u);
-//                Toast.makeText(getApplicationContext(),urlApi+u+"-"+Username+Passwordd,Toast.LENGTH_SHORT).show();
-                if(u.equals(Username) && p.equals(Passwordd)){
-                    login();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"Wrong Username and Password",Toast.LENGTH_SHORT).show();
-                }
-//                login();
-            }
-        });
+                String urlApi = "https://mocki.io/v1/a2311b1e-8052-4c7b-9d22-b95b17623821";
+                String url = urlApi;
+                System.out.println(url);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-    }
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                System.out.println("Response: " + response.toString());
+                                try {
+                                    String Name = response.getString("name");
+                                    String Password = response.getString("password");
+                                    String Username = response.getString("username");
+//                                    String IdU = response.getString("id");
+                                    if(u.equals(Username) && p.equals(Password)){
+                                        Intent intent = new Intent(MainActivity.this,MainActivity2.class);
+                                        intent.putExtra("uName",Username);
+//                                        intent.putExtra("uID",IdU);
+                                        intent.putExtra("NameS",Name);
+                                        startActivity(intent);
+                                    }
+                                    else{
+                                        Toast.makeText(getApplicationContext(),"Wrong Username and Password",Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-    private  void jsonPrase(String url){
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-//                        System.out.println("here");
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-//                            System.out.println("here");
-                            for(int i = 0;i<=jsonArray.length();i++){
-                                JSONObject user = jsonArray.getJSONObject(i);
-                                String Username = user.getString("username").toString();
-//                                System.out.println(Username);
-                                String Passwordd = user.getString("password").toString();
-                                String Namee = user.getString("name").toString();
-                                int idd = user.getInt("id");
-                                setData(Username,Passwordd,Namee,idd);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                        }, new Response.ErrorListener() {
 
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-//                System.out.println("Errorrrr");
-                    error.printStackTrace();
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error
+
+                            }
+                        });
+//                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        System.out.println("here");
+//                        try {
+//                            String Name = response.getString("name");
+//                            String Password = response.getString("password");
+//                            String Username = response.getString("username");
+//                            String IdU = response.getString("id");
+//                            setData(Name,Password,Username,IdU);
+//                        } catch (JSONException e) {
+//                            System.out.println(e.toString());
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        System.out.println("Error");
+//                    }
+//                });
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(jsonObjectRequest);
+//                Toast.makeText(getApplicationContext(),Username+Passwordd,Toast.LENGTH_SHORT).show();
+
             }
         });
-        mQueue.add(request);
 
     }
 
-    public void login() {
-        Intent intent = new Intent(MainActivity.this,MainActivity2.class);
-        startActivity(intent);
+
+
+    public void login(String u,String p) {
+        if(u.equals(Username) && p.equals(Passwordd)){
+            Intent intent = new Intent(MainActivity.this,MainActivity2.class);
+            intent.putExtra("uName",Username);
+            intent.putExtra("uID",idd);
+            intent.putExtra("NameS",Namee);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Wrong Username and Password",Toast.LENGTH_SHORT).show();
+        }
+//        Intent intent = new Intent(MainActivity.this,MainActivity2.class);
+//        startActivity(intent);
     }
-    public void setData(String u,String p,String n ,int l){
-//        System.out.println(u+p+n+l);
+    public void setData(String u,String p,String n ,String l){
+        System.out.println(u+p+n+l);
         this.Username = u;
         this.Passwordd = p;
         this.Namee = n;
