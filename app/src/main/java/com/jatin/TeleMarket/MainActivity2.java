@@ -67,6 +67,7 @@ public class MainActivity2 extends AppCompatActivity {
         String UserId = intent.getStringExtra("UserId");
         String url = "http://api.jatinkumawat.rf.gd/upData/dataFetch.php?uid="+UserId;
         System.out.println(url);
+        Toast.makeText(getApplicationContext(),"Welcome "+UserName,Toast.LENGTH_SHORT).show();
         mQueue = Volley.newRequestQueue(this);
         Customer OutCust ;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
@@ -119,7 +120,7 @@ public class MainActivity2 extends AppCompatActivity {
                     String num = c.GetMobileNumber();
                     callIntent.setData(Uri.parse("tel:"+c.GetMobileNumber()));
                     startActivity(callIntent);
-                    Toast.makeText(getApplicationContext(),"Rec Start",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(),"Rec Start",Toast.LENGTH_SHORT).show();
                     while(manager.getCallState()!=TelephonyManager.CALL_STATE_OFFHOOK){
 
                     }
@@ -140,7 +141,7 @@ public class MainActivity2 extends AppCompatActivity {
                         rec.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                         rec.prepare();
                         rec.start();
-                        Toast.makeText(getApplicationContext(),"Recording Started",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),"Recording Started",Toast.LENGTH_SHORT).show();
                     }
                     catch (Exception e){
                         System.out.println(e.toString());
@@ -157,7 +158,7 @@ public class MainActivity2 extends AppCompatActivity {
                     rec.stop();
                     rec.release();
 
-                    Toast.makeText(getApplicationContext(),"Now Idle",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(),"Now Idle",Toast.LENGTH_SHORT).show();
                     idd++;
 //                    DisplayOnPage(customers[idd]);
                     CharSequence endTime = DateFormat.format("yy-MM-dd hh:mm:ss",date.getTime());
@@ -202,7 +203,7 @@ public class MainActivity2 extends AppCompatActivity {
                     requestQueue.add(stringRequest);
                     File file22 = new File(filePath);
                     if(filePath!=null){
-                        Toast.makeText(getApplicationContext(),filePath,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),filePath,Toast.LENGTH_SHORT).show();
                         UploadFileRec(filePath);
                     }
                     else{
@@ -217,7 +218,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                 }
                 else if(manager.getCallState()==TelephonyManager.CALL_STATE_OFFHOOK){
-                    Toast.makeText(getApplicationContext(),"phone is busy",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Your Phone is Busy.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -235,10 +236,10 @@ public class MainActivity2 extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if(s.equalsIgnoreCase("true")){
-                Toast.makeText(getApplicationContext(),"File Uploaded",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"File Uploaded",Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(getApplicationContext(),"Failed Uploaded",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"Failed Uploaded",Toast.LENGTH_SHORT).show();
             }
         }
 
