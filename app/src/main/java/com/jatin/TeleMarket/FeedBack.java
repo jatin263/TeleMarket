@@ -61,7 +61,7 @@ public class FeedBack extends AppCompatActivity {
                 }
                 String interest = genderradioButton.getText().toString();
                 String details = genderradioButton1.getText().toString();
-                String urlApi = ""+Cid;
+                String urlApi = "http://api.jatinkumawat.rf.gd/upData/feedback.php";
                 if(gd1 && gd2){
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, urlApi,
                             new Response.Listener<String>() {
@@ -84,6 +84,7 @@ public class FeedBack extends AppCompatActivity {
                             Map<String,String> params = new HashMap<String,String>();
                             params.put("interest", String.valueOf(interest));
                             params.put("details", String.valueOf(details));
+                            params.put("cid",Cid);
                             return params;
                         }
                     };
@@ -96,7 +97,7 @@ public class FeedBack extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else{
-                    Toast.makeText(FeedBack.this,"Fill Form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FeedBack.this,"Please Fill Form", Toast.LENGTH_SHORT).show();
                 }
             }
         });

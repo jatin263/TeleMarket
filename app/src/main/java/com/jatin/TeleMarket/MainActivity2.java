@@ -192,6 +192,8 @@ public class MainActivity2 extends AppCompatActivity {
                             params.put("CallStart", String.valueOf(startTime));
                             params.put("CallEnd", String.valueOf(finalDatee));
                             params.put("cid",Cid);
+//                            params.put("teleNum",num);
+                            params.put("userID",UserId);
 //                            params.put("recfile",filePath);
                             return params;
                         }
