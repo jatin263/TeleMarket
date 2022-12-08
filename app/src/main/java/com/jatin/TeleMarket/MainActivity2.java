@@ -138,7 +138,7 @@ public class MainActivity2 extends AppCompatActivity {
                         rec.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                         rec.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                         rec.setOutputFile(filePath);
-                        rec.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                        rec.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
                         rec.prepare();
                         rec.start();
 //                        Toast.makeText(getApplicationContext(),"Recording Started",Toast.LENGTH_SHORT).show();
@@ -309,7 +309,7 @@ public class MainActivity2 extends AppCompatActivity {
         CharSequence sdf = DateFormat.format(customer.GetMobileNumber()+"MM-dd-yy-hh-mm-ss",date.getTime());
         ContextWrapper contextWrapper = new ContextWrapper(getApplication());
         File musicDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDir,sdf+".mp3");
+        File file = new File(musicDir,sdf+".3gp");
         return file.getPath();
     }
 
