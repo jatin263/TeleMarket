@@ -1,7 +1,11 @@
 package com.jatin.TeleMarket;
 
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -26,11 +30,20 @@ public class MainActivity extends AppCompatActivity {
     private String idd = null;
     private Button button;
     private EditText ed;
+    @SuppressLint({"MissingInflatedId", "ResourceType"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 101);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 102);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 103);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE}, 104);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 105);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.MODIFY_AUDIO_SETTINGS}, 106);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAPTURE_AUDIO_OUTPUT}, 107);
         mQueue = Volley.newRequestQueue(this);
         button=(Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 String u = ed.getText().toString();
                 ed = (EditText) findViewById(R.id.passWord);
                 String p = ed.getText().toString();
-                String urlApi = "http://api.jatinkumawat.rf.gd/upData/login.php?unames=";
+                String urlApi = "https://jatinprojectapi.000webhostapp.com/api/login.php?unames=";
                 String url = urlApi+u;
                 System.out.println(url);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest

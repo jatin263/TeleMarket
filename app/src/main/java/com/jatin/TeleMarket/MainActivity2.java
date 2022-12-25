@@ -65,12 +65,12 @@ public class MainActivity2 extends AppCompatActivity {
         String UName = intent.getStringExtra("UName");
         String UserName = intent.getStringExtra("UserName");
         String UserId = intent.getStringExtra("UserId");
-        String url = "http://api.jatinkumawat.rf.gd/upData/dataFetch.php?uid="+UserId;
+        String url = "https://jatinprojectapi.000webhostapp.com/api/dataFetch.php?uid="+UserId;
         System.out.println(url);
         Toast.makeText(getApplicationContext(),"Welcome "+UserName,Toast.LENGTH_SHORT).show();
         mQueue = Volley.newRequestQueue(this);
         Customer OutCust ;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -98,7 +98,7 @@ public class MainActivity2 extends AppCompatActivity {
         mQueue.start();
         textView = (TextView) findViewById(R.id.User);
         textView.setText(UserName);
-        upLoadServerUri = "http://api.jatinkumawat.rf.gd/upData/index.php";
+        upLoadServerUri = "https://jatinprojectapi.000webhostapp.com/api/index.php";
 
         ((Button)findViewById(R.id.btnCall)).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -118,7 +118,8 @@ public class MainActivity2 extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Making Call Wait",Toast.LENGTH_SHORT).show();
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
                     String num = c.GetMobileNumber();
-                    callIntent.setData(Uri.parse("tel:"+c.GetMobileNumber()));
+                    System.out.println(num);
+                    callIntent.setData(Uri.parse("tel:"+num));
                     startActivity(callIntent);
 //                    Toast.makeText(getApplicationContext(),"Rec Start",Toast.LENGTH_SHORT).show();
                     while(manager.getCallState()!=TelephonyManager.CALL_STATE_OFFHOOK){
@@ -169,7 +170,7 @@ public class MainActivity2 extends AppCompatActivity {
                     else{
                         datee = new SimpleDateFormat("hh:mm:ss").format(new Date());
                     }
-                    String urlApi = "http://api.jatinkumawat.rf.gd/upData/index.php";
+                    String urlApi = "https://jatinprojectapi.000webhostapp.com/api/index.php";
                     String finalDatee = datee;
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, urlApi,
                             new Response.Listener<String>() {
@@ -272,7 +273,7 @@ public class MainActivity2 extends AppCompatActivity {
                         .addFormDataPart("cid",cid)
                         .build();
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url("http://api.jatinkumawat.rf.gd/upData/fileUpload.php")
+                        .url("https://jatinprojectapi.000webhostapp.com/api/fileUpload.php")
                         .post(requestBody)
                         .build();
                 OkHttpClient client = new OkHttpClient();

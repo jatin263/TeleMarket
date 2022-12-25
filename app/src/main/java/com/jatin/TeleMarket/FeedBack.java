@@ -61,7 +61,7 @@ public class FeedBack extends AppCompatActivity {
                 }
                 String interest = genderradioButton.getText().toString();
                 String details = genderradioButton1.getText().toString();
-                String urlApi = "http://api.jatinkumawat.rf.gd/upData/feedback.php";
+                String urlApi = "https://jatinprojectapi.000webhostapp.com/api/feedback.php";
                 if(gd1 && gd2){
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, urlApi,
                             new Response.Listener<String>() {
